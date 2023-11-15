@@ -14,6 +14,7 @@ async function onSubmit() {
   const allTabs = await chrome.tabs.query({active: false, currentWindow: true});
   const all_tabs_urls = allTabs.reduce((acc, tab) => {
     acc.push({
+      id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
       title: tab.title,
       url: tab.url
     });

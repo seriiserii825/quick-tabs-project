@@ -1,31 +1,24 @@
 <script setup lang="ts">
-import {defineProps, onMounted, PropType, ref} from "vue";
-import IconPlay from "../icons/IconPlay.vue";
+import {onMounted, ref, defineProps, PropType} from "vue";
+import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import IconEdit from "../icons/IconEdit.vue";
 import IconDelete from "../icons/IconDelete.vue";
 import {IListItem} from "../../interfaces/list/IList";
-import SubList from "./SubList.vue";
-import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 
 const input_ref = ref<HTMLInputElement>();
-
+const value = ref("");
+const disabled = ref(true);
 const props = defineProps({
-  id: {
+  item: {
+    type: Object as PropType<IListItem>,
+    required: true,
+  },
+  list_id: {
     type: Number,
     required: true,
   },
-  title: {
-    type: String,
-    required: true,
-  },
-  items: {
-    type: Array as PropType<IListItem[]>,
-    required: true,
-  }
 });
-const value = ref("");
-const disabled = ref(true);
 
 function toggleDisabled() {
   disabled.value = !disabled.value;
@@ -41,21 +34,22 @@ function onBlur() {
     value.value = value.value.trim();
     value.value = value.value.replace(/ /g, '_');
     const all_tabs = useGetFromLocalStorage();
-    const index = all_tabs?.findIndex((item) => item.id === props.id);
+    const list_index = all_tabs?.findIndex((item) => item.id === props.list_id);
+    const index = all_tabs[list_index].items.findIndex((item) => item.id === props.item.id);
     if (index !== undefined && index !== -1) {
-      all_tabs[index].title = value.value;
+      all_tabs[list_index].items[index].title = value.value;
       useChangeLocalStorage(all_tabs);
     }
   }
 }
 
 onMounted(() => {
-  value.value = props.title;
+  value.value = props.item.title;
 });
 </script>
 
 <template>
-  <li class="list__item">
+  <div class="sublist__item">
     <input
         :ref="input_ref"
         type="text"
@@ -64,15 +58,11 @@ onMounted(() => {
         :class="{'active': !disabled}"
         @blur="onBlur"
         :disabled="disabled">
-    <div class="list__play">
-      <IconPlay/>
-    </div>
-    <div class="list__edit" @click="toggleDisabled">
+    <div class="sublist__edit" @click="toggleDisabled">
       <IconEdit/>
     </div>
-    <div class="list__delete">
+    <div class="sublist__delete">
       <IconDelete/>
     </div>
-    <SubList :list_id="id" :items="items"/>
-  </li>
+  </div>
 </template>
