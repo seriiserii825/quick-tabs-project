@@ -1,0 +1,22 @@
+.popup {
+  padding: 3.2rem;
+  width: 100%;
+  overflow: hidden;
+  &__header {
+    display: flex;
+    align-items: center;
+  }
+  &__title {
+    margin-right: 3.2rem;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+  &__input {
+    flex: 1;
+    height: 4.8rem;
+    text-indent: 2rem;
+    border: none;
+    border-bottom: 1px solid var(--accent);
+    outline: none;
+  }
+}
