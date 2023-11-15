@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {defineProps, onMounted, PropType, ref} from "vue";
 import IconPlay from "../icons/IconPlay.vue";
-import IconEdit from "../icons/IconEdit.vue";
 import IconDelete from "../icons/IconDelete.vue";
 import {IListItem} from "../../interfaces/list/IList";
 import SubList from "./SubList.vue";
@@ -25,16 +24,6 @@ const props = defineProps({
   }
 });
 const value = ref("");
-const disabled = ref(true);
-
-function toggleDisabled() {
-  disabled.value = !disabled.value;
-  if (disabled.value) {
-    input_ref.value?.blur();
-  } else {
-    input_ref.value?.focus();
-  }
-}
 
 function onBlur() {
   if (value.value !== "") {
@@ -49,7 +38,7 @@ function onBlur() {
   }
 }
 
-function onDelete(){
+function onDelete() {
   const prompt = window.confirm("Are you sure you want to delete this tab?");
   if (!prompt) {
     return;
@@ -74,14 +63,10 @@ onMounted(() => {
         type="text"
         v-model="value"
         class="list__input"
-        :class="{'active': !disabled}"
         @blur="onBlur"
-        :disabled="disabled">
+    >
     <div class="list__play">
       <IconPlay/>
-    </div>
-    <div class="list__edit" @click="toggleDisabled">
-      <IconEdit/>
     </div>
     <div class="list__delete" @click="onDelete">
       <IconDelete/>

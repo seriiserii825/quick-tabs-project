@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUpdated, ref, watch} from "vue";
+import {nextTick, onMounted, onUpdated, ref, watch} from "vue";
 import ListItem from "./components/list/ListItem.vue";
 import {IList} from "./interfaces/list/IList";
 import useGetFromLocalStorage from "./hooks/useGetFromLocalStorage";
@@ -45,7 +45,7 @@ async function onSubmit() {
   updateFromLocalStorage();
 }
 
-function updateFromLocalStorage(){
+function updateFromLocalStorage() {
   const all_tabs = useGetFromLocalStorage();
   if (all_tabs) {
     items.value = all_tabs;
@@ -56,13 +56,16 @@ function updateFromLocalStorage(){
 onMounted(() => {
   updateFromLocalStorage()
   filtered.value = items.value;
+  nextTick(() => {
+    input_ref.value.focus();
+  });
 });
 </script>
 <template>
   <div class="popup">
     <header class="popup__header">
       <h2 class="popup__title">Create new project</h2>
-      <input  :ref="input_ref" class="popup__input" type="text" v-model="title">
+      <input :ref="input_ref" class="popup__input" type="text" v-model="title">
       <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
     </header>
     <input type="text" placeholder="Search project" class="popup__search" v-model="search">
