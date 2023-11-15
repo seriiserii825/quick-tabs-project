@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {onMounted, onUpdated, ref} from "vue";
+import {onMounted, onUpdated, ref, watch} from "vue";
 import ListItem from "./components/list/ListItem.vue";
 import {IList} from "./interfaces/list/IList";
 import useGetFromLocalStorage from "./hooks/useGetFromLocalStorage";
@@ -9,6 +9,19 @@ const input_ref = ref<HTMLInputElement>();
 const title = ref("");
 
 const items = ref<IList[]>();
+const filtered = ref<IList[]>();
+
+const search = ref("");
+
+watch(search, (value) => {
+  if (value === "") {
+    filtered.value = items.value;
+  } else {
+    filtered.value = items.value.filter((item) => {
+      return item.title.toLowerCase().includes(value.toLowerCase());
+    });
+  }
+});
 
 async function onSubmit() {
   const allTabs = await chrome.tabs.query({active: false, currentWindow: true});
@@ -42,6 +55,7 @@ function updateFromLocalStorage(){
 
 onMounted(() => {
   updateFromLocalStorage()
+  filtered.value = items.value;
 });
 </script>
 <template>
@@ -51,9 +65,10 @@ onMounted(() => {
       <input  :ref="input_ref" class="popup__input" type="text" v-model="title">
       <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
     </header>
+    <input type="text" placeholder="Search project" class="popup__search" v-model="search">
     <ul v-if="items && items.length > 0" class="list">
       <ListItem
-          v-for="item in items"
+          v-for="item in filtered"
           :key="item.title"
           :id="item.id"
           :title="item.title"
