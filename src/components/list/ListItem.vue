@@ -5,10 +5,16 @@ import IconEdit from "../icons/IconEdit.vue";
 import IconDelete from "../icons/IconDelete.vue";
 import {IListItem} from "../../interfaces/list/IList";
 import SubList from "./SubList.vue";
+import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
+import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 
 const input_ref = ref<HTMLInputElement>();
 
 const props = defineProps({
+  id: {
+    type: Number,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
@@ -20,6 +26,7 @@ const props = defineProps({
 });
 const value = ref("");
 const disabled = ref(true);
+
 function toggleDisabled() {
   disabled.value = !disabled.value;
   if (disabled.value) {
@@ -28,6 +35,20 @@ function toggleDisabled() {
     input_ref.value?.focus();
   }
 }
+
+function onBlur() {
+  if (value.value !== "") {
+    value.value = value.value.trim();
+    value.value = value.value.replace(/ /g, '_');
+    const all_tabs = useGetFromLocalStorage();
+    const index = all_tabs?.findIndex((item) => item.id === props.id);
+    if (index !== undefined && index !== -1) {
+      all_tabs[index].title = value.value;
+      useChangeLocalStorage(all_tabs);
+    }
+  }
+}
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -41,6 +62,7 @@ onMounted(() => {
         v-model="value"
         class="list__input"
         :class="{'active': !disabled}"
+        @blur="onBlur"
         :disabled="disabled">
     <div class="list__play">
       <IconPlay/>
