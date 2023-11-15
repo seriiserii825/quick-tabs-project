@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import {ref} from "vue";
+import {onUpdated, ref} from "vue";
 import ListItem from "./components/list/ListItem.vue";
 import {IList} from "./interfaces/list/IList";
+
+const input_ref = ref<HTMLInputElement>();
+const title = ref("");
 
 const items = ref<IList[]>([
   {
@@ -31,14 +34,16 @@ const items = ref<IList[]>([
     ]
   }
 ]);
-
+onUpdated(() => {
+  input_ref.value?.focus();
+});
 </script>
 
 <template>
   <div class="popup">
     <header class="popup__header">
       <h2 class="popup__title">Create new project</h2>
-      <input class="popup__input" type="text" v-model="title">
+      <input :ref="input_ref" class="popup__input" type="text" v-model="title">
     </header>
     <h2 class="popup__subtitle">Projects list</h2>
     <ul class="list">
