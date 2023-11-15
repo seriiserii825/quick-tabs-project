@@ -1,5 +1,5 @@
 .btn {
-  padding: 1.6rem;
+  padding: 0.6rem 1.2rem;
   font-size: 1.6rem;
   color: #fff;
   border: 1px solid transparent;
@@ -12,5 +12,11 @@
   &:disabled {
     opacity: 0.6;
     cursor: default;
+  }
+  &--success {
+    background: #009dff;
+  }
+  &--error {
+    background: #ff0000;
   }
 }
