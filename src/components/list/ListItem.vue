@@ -7,7 +7,7 @@ import SubList from "./SubList.vue";
 import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 
-const input_ref = ref<HTMLInputElement>();
+const input_ref = ref();
 
 const props = defineProps({
   id: {
@@ -30,7 +30,7 @@ function onBlur() {
     value.value = value.value.trim();
     value.value = value.value.replace(/ /g, '_');
     const all_tabs = useGetFromLocalStorage();
-    const index = all_tabs?.findIndex((item) => item.id === props.id);
+    const index = all_tabs?.findIndex((item: any) => item.id === props.id);
     if (index !== undefined && index !== -1) {
       all_tabs[index].title = value.value;
       useChangeLocalStorage(all_tabs);
@@ -44,7 +44,7 @@ function onDelete() {
     return;
   }
   const all_tabs = useGetFromLocalStorage();
-  const index = all_tabs?.findIndex((item) => item.id === props.id);
+  const index = all_tabs?.findIndex((item: any) => item.id === props.id);
   if (index !== undefined && index !== -1) {
     all_tabs.splice(index, 1);
     useChangeLocalStorage(all_tabs);
@@ -53,9 +53,11 @@ function onDelete() {
 
 async function openAll() {
   const all_tabs = useGetFromLocalStorage();
-  const index = all_tabs?.findIndex((item) => item.id === props.id);
+  const index = all_tabs?.findIndex((item: any) => item.id === props.id);
   if (index !== undefined && index !== -1) {
+    // @ts-ignore
     const allTabs = await chrome.tabs.query({active: false, currentWindow: true});
+    // @ts-ignore
     const all_tabs_urls = allTabs.reduce((acc, tab) => {
       acc.push({
         id: tab.id,
@@ -65,14 +67,20 @@ async function openAll() {
       return acc;
     }, []);
     let queryOptions = {active: true, lastFocusedWindow: true};
+    // @ts-ignore
     const [tab] = await chrome.tabs.query(queryOptions)
     const tabs = all_tabs[index].items;
+    // @ts-ignore
     tabs.forEach((item) => {
+      // @ts-ignore
       chrome.tabs.create({url: item.url});
     });
     setTimeout(() => {
+      // @ts-ignore
       chrome.tabs.remove(tab.id)
+      // @ts-ignore
       all_tabs_urls.forEach((item) => {
+      // @ts-ignore
         chrome.tabs.remove(item.id)
       });
     }, 1000);

@@ -7,8 +7,8 @@ import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
 import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
 
-const input_ref = ref<HTMLInputElement>();
-const file_ref = ref<HTMLInputElement>();
+const input_ref = ref();
+const file_ref = ref();
 const title = ref("");
 
 const items = ref<IList[]>();
@@ -20,22 +20,23 @@ watch(search, (value) => {
   if (value === "") {
     filtered.value = items.value;
   } else {
-    const filtered_lc = items.value.filter((item) => {
+    const filtered_lc = items.value?.filter((item) => {
       return item.title.toLowerCase().includes(value.toLowerCase());
     });
-    if(filtered_lc.length > 0){
+    if (filtered_lc && filtered_lc.length > 0) {
       filtered.value = filtered_lc;
     }
   }
 });
 
 async function onSubmit() {
-  const tabs = [];
+  const tabs: any = [];
+  //@ts-ignore
   await chrome.windows.getCurrent({populate: true}, function (window) {
-    window.tabs.forEach(function (tab) {
+    window.tabs.forEach(function (tab: any) {
       tabs.push(tab);
     });
-    const all_tabs_urls = tabs.reduce((acc, tab) => {
+    const all_tabs_urls = tabs.reduce((acc: any, tab: any) => {
       acc.push({
         id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
         title: tab.title,
@@ -60,25 +61,29 @@ function updateFromLocalStorage() {
   const all_tabs = useGetFromLocalStorage();
   if (all_tabs) {
     items.value = all_tabs;
-    items.value = items.value.reverse();
+    items.value = items.value?.reverse();
     filtered.value = items.value;
-  }else{
+  } else {
     items.value = [];
     filtered.value = [];
   }
 }
 
 function importAll() {
+  //@ts-ignore
   const file = file_ref.value.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = function (e) {
+      //@ts-ignore
       const fileContents = e.target.result;
+      //@ts-ignore
       const tabs = JSON.parse(fileContents);
       console.log(tabs, 'tabs')
       useChangeLocalStorage(tabs);
       updateFromLocalStorage();
     };
+    //@ts-ignore
     const result = reader.readAsText(file);
   }
 }
@@ -94,6 +99,7 @@ function exportAll() {
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
   const file_name = `${hours}_${minutes}_${day}-${month}-${year}.json`;
+  //@ts-ignore
   chrome.downloads.download({
     url: url,
     filename: file_name,
@@ -101,7 +107,7 @@ function exportAll() {
   });
 }
 
-function clearAll(){
+function clearAll() {
   useClearLocalStorage();
   updateFromLocalStorage();
 }
@@ -116,22 +122,22 @@ onMounted(() => {
     <header class="popup__header">
       <h2 class="popup__title">Create new project</h2>
       <input :ref="input_ref" class="popup__input" type="text" v-model="title">
+      <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
+      <button @click="clearAll" class="btn btn--error">Clear</button>
       <div class="btn popup__import">
         <span>Import</span>
-        <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
+        <input @change="importAll" ref="file_ref" type="file" id="fileInput" />
       </div>
       <button @click="exportAll" class="btn btn--success">Export</button>
-      <button @click="clearAll" class="btn btn--error">Clear</button>
-      <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
     </header>
     <input v-if="filtered && filtered.length > 0" type="text" placeholder="Search project" class="popup__search" v-model="search">
     <ul v-if="items && items.length > 0" class="list">
       <ListItem
-          v-for="item in filtered"
-          :key="item.title"
-          :id="item.id"
-          :title="item.title"
-          :items="item.items"/>
+                v-for="item in filtered"
+                :key="item.title"
+                :id="item.id"
+                :title="item.title"
+                :items="item.items" />
     </ul>
   </div>
 </template>

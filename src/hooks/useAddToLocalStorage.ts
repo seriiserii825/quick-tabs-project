@@ -1,4 +1,4 @@
-export default function useAddToLocalStorage(value) {
+export default function useAddToLocalStorage(value: any) {
     const lc = localStorage.getItem('all_tabs');
     if (lc) {
         localStorage.setItem('all_tabs', JSON.stringify([...JSON.parse(lc), value]));

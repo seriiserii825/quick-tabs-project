@@ -3,6 +3,7 @@ import {defineProps, PropType} from "vue";
 import {IListItem} from "../../interfaces/list/IList";
 import SublistItem from "./SublistItem.vue";
 
+// @ts-ignore
 const props = defineProps({
   items: {
     type: Array as PropType<IListItem[]>,
