@@ -51,6 +51,34 @@ function onDelete() {
   }
 }
 
+async function openAll() {
+  const all_tabs = useGetFromLocalStorage();
+  const index = all_tabs?.findIndex((item) => item.id === props.id);
+  if (index !== undefined && index !== -1) {
+    const allTabs = await chrome.tabs.query({active: false, currentWindow: true});
+    const all_tabs_urls = allTabs.reduce((acc, tab) => {
+      acc.push({
+        id: tab.id,
+        title: tab.title,
+        url: tab.url
+      });
+      return acc;
+    }, []);
+    let queryOptions = {active: true, lastFocusedWindow: true};
+    const [tab] = await chrome.tabs.query(queryOptions)
+    const tabs = all_tabs[index].items;
+    tabs.forEach((item) => {
+      chrome.tabs.create({url: item.url});
+    });
+    setTimeout(() => {
+      chrome.tabs.remove(tab.id)
+      all_tabs_urls.forEach((item) => {
+        chrome.tabs.remove(item.id)
+      });
+    }, 1000);
+  }
+}
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -65,7 +93,7 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <div class="list__play">
+    <div class="list__play" @click="openAll">
       <IconPlay/>
     </div>
     <div class="list__delete" @click="onDelete">

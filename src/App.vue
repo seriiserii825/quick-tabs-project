@@ -24,25 +24,30 @@ watch(search, (value) => {
 });
 
 async function onSubmit() {
-  const allTabs = await chrome.tabs.query({active: false, currentWindow: true});
-  const all_tabs_urls = allTabs.reduce((acc, tab) => {
-    acc.push({
-      id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
-      title: tab.title,
-      url: tab.url
+  const tabs = [];
+  await chrome.windows.getCurrent({ populate: true }, function (window) {
+    window.tabs.forEach(function (tab) {
+      tabs.push(tab);
     });
-    return acc;
-  }, []);
-  let project_title = title.value.replace(/ /g, '_');
-  project_title = project_title.trim();
-  const new_project = {
-    id: Number(Date.now().toString()),
-    title: project_title,
-    items: all_tabs_urls
-  }
-  useAddToLocalStorage(new_project);
-  title.value = "";
-  updateFromLocalStorage();
+    const all_tabs_urls = tabs.reduce((acc, tab) => {
+      acc.push({
+        id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
+        title: tab.title,
+        url: tab.url
+      });
+      return acc;
+    }, []);
+    let project_title = title.value.replace(/ /g, '_');
+    project_title = project_title.trim();
+    const new_project = {
+      id: Number(Date.now().toString()),
+      title: project_title,
+      items: all_tabs_urls
+    }
+    useAddToLocalStorage(new_project);
+    title.value = "";
+    updateFromLocalStorage();
+  });
 }
 
 function updateFromLocalStorage() {
@@ -50,15 +55,13 @@ function updateFromLocalStorage() {
   if (all_tabs) {
     items.value = all_tabs;
     items.value = items.value.reverse();
+    filtered.value = items.value;
   }
 }
 
 onMounted(() => {
   updateFromLocalStorage()
   filtered.value = items.value;
-  nextTick(() => {
-    input_ref.value.focus();
-  });
 });
 </script>
 <template>
