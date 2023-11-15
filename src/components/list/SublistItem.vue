@@ -43,6 +43,20 @@ function onBlur() {
   }
 }
 
+function onDelete(){
+  const prompt = window.confirm("Are you sure you want to delete this tab?");
+  if (!prompt) {
+    return;
+  }
+  const all_tabs = useGetFromLocalStorage();
+  const list_index = all_tabs?.findIndex((item) => item.id === props.list_id);
+  const index = all_tabs[list_index].items.findIndex((item) => item.id === props.item.id);
+  if (index !== undefined && index !== -1) {
+    all_tabs[list_index].items.splice(index, 1);
+    useChangeLocalStorage(all_tabs);
+  }
+}
+
 onMounted(() => {
   value.value = props.item.title;
 });
@@ -61,7 +75,7 @@ onMounted(() => {
     <div class="sublist__edit" @click="toggleDisabled">
       <IconEdit/>
     </div>
-    <div class="sublist__delete">
+    <div class="sublist__delete" @click="onDelete">
       <IconDelete/>
     </div>
   </div>

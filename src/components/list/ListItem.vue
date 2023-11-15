@@ -49,6 +49,19 @@ function onBlur() {
   }
 }
 
+function onDelete(){
+  const prompt = window.confirm("Are you sure you want to delete this tab?");
+  if (!prompt) {
+    return;
+  }
+  const all_tabs = useGetFromLocalStorage();
+  const index = all_tabs?.findIndex((item) => item.id === props.id);
+  if (index !== undefined && index !== -1) {
+    all_tabs.splice(index, 1);
+    useChangeLocalStorage(all_tabs);
+  }
+}
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -70,7 +83,7 @@ onMounted(() => {
     <div class="list__edit" @click="toggleDisabled">
       <IconEdit/>
     </div>
-    <div class="list__delete">
+    <div class="list__delete" @click="onDelete">
       <IconDelete/>
     </div>
     <SubList :list_id="id" :items="items"/>
