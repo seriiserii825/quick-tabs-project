@@ -5,11 +5,18 @@
   &__header {
     display: flex;
     align-items: center;
+    margin-bottom: 4.8rem;
   }
   &__title {
     margin-right: 3.2rem;
     font-size: 2rem;
     font-weight: bold;
+  }
+  &__subtitle {
+    margin-bottom: 3.2rem;
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent);
   }
   &__input {
     flex: 1;

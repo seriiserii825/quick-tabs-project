@@ -1,0 +1,19 @@
+.sublist {
+  flex: 0 0 100%;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--accent);
+  &__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.6rem;
+    border-bottom: 1px solid rgba(0,0,0,.1);
+    &:last-of-type {
+      border: none;
+    }
+  }
+  &__edit {
+    margin-left: auto;
+    margin-right: 1.6rem;
+  }
+}
