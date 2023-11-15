@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Chrome Vite",
+  "description": "vue in chrome extension",
+  "version": "1.0",
+  "author": "serii burduja",
+  "action": {
+    "default_popup": "index.html",
+    "default_icon": "icons/icon-32.png"
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "scripting",
+    "storage",
+    "alarms",
+    "notifications",
+    "downloads"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "commands": {
+    "tabs-to-buffer": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Up",
+        "mac": "Command+Shift+Up"
+      },
+      "description": "Open app"
+    }
+  }
+}
