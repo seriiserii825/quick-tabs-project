@@ -1,33 +1,24 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import ListItem from "./components/list/ListItem.vue";
-import {IList} from "./interfaces/list/IList";
 import useGetFromLocalStorage from "./hooks/useGetFromLocalStorage";
 import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
 import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
+import {usePopupStore} from "./stores/popup-store";
+import {storeToRefs} from "pinia";
+
+const popup_store = usePopupStore();
+const {
+  search,
+  items,
+  filtered,
+} = storeToRefs(popup_store);
 
 const input_ref = ref();
 const file_ref = ref();
 const title = ref("");
 
-const items = ref<IList[]>();
-const filtered = ref<IList[]>();
-
-const search = ref("");
-
-watch(search, (value) => {
-  if (value === "") {
-    filtered.value = items.value;
-  } else {
-    const filtered_lc = items.value?.filter((item) => {
-      return item.title.toLowerCase().includes(value.toLowerCase());
-    });
-    if (filtered_lc && filtered_lc.length > 0) {
-      filtered.value = filtered_lc;
-    }
-  }
-});
 
 async function onSubmit() {
   const tabs: any = [];
@@ -53,21 +44,10 @@ async function onSubmit() {
     }
     useAddToLocalStorage(new_project);
     title.value = "";
-    updateFromLocalStorage();
+    popup_store.updateFromLocalStorage();
   });
 }
 
-function updateFromLocalStorage() {
-  const all_tabs = useGetFromLocalStorage();
-  if (all_tabs) {
-    items.value = all_tabs;
-    items.value = items.value?.reverse();
-    filtered.value = items.value;
-  } else {
-    items.value = [];
-    filtered.value = [];
-  }
-}
 
 function importAll() {
   //@ts-ignore
@@ -79,9 +59,8 @@ function importAll() {
       const fileContents = e.target.result;
       //@ts-ignore
       const tabs = JSON.parse(fileContents);
-      console.log(tabs, 'tabs')
       useChangeLocalStorage(tabs);
-      updateFromLocalStorage();
+      popup_store.updateFromLocalStorage();
     };
     //@ts-ignore
     const result = reader.readAsText(file);
@@ -109,12 +88,11 @@ function exportAll() {
 
 function clearAll() {
   useClearLocalStorage();
-  updateFromLocalStorage();
+  popup_store.updateFromLocalStorage();
 }
 
 onMounted(() => {
-  updateFromLocalStorage()
-  filtered.value = items.value;
+  popup_store.updateFromLocalStorage()
 });
 </script>
 <template>
@@ -126,18 +104,19 @@ onMounted(() => {
       <button @click="clearAll" class="btn btn--error">Clear</button>
       <div class="btn popup__import">
         <span>Import</span>
-        <input @change="importAll" ref="file_ref" type="file" id="fileInput" />
+        <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
       </div>
       <button @click="exportAll" class="btn btn--success">Export</button>
     </header>
-    <input v-if="filtered && filtered.length > 0" type="text" placeholder="Search project" class="popup__search" v-model="search">
+    <input v-if="filtered && filtered.length > 0" type="text" placeholder="Search project" class="popup__search"
+           v-model="search">
     <ul v-if="items && items.length > 0" class="list">
       <ListItem
-                v-for="item in filtered"
-                :key="item.title"
-                :id="item.id"
-                :title="item.title"
-                :items="item.items" />
+          v-for="item in filtered"
+          :key="item.id"
+          :id="item.id"
+          :title="item.title"
+          :items="item.items"/>
     </ul>
   </div>
 </template>

@@ -5,6 +5,9 @@ import IconDelete from "../icons/IconDelete.vue";
 import {IListItem} from "../../interfaces/list/IList";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 import Confirm from "../popups/Confirm.vue";
+import {usePopupStore} from "../../stores/popup-store";
+
+const popup_store = usePopupStore();
 
 const confirm_status = ref(false);
 const delete_status = ref(false);
@@ -52,6 +55,7 @@ function emitAgree() {
       all_tabs[list_index].items.splice(index, 1);
       useChangeLocalStorage(all_tabs);
     }
+    popup_store.updateFromLocalStorage();
     delete_status.value = false;
   }
   confirm_status.value = false;

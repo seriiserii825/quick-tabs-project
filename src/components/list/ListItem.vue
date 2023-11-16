@@ -7,6 +7,13 @@ import SubList from "./SubList.vue";
 import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 
+import {usePopupStore} from "../../stores/popup-store";
+import Confirm from "../popups/Confirm.vue";
+
+const popup_store = usePopupStore();
+
+const confirm_status = ref(false);
+const delete_status = ref(false);
 const input_ref = ref();
 
 const props = defineProps({
@@ -39,16 +46,22 @@ function onBlur() {
 }
 
 function onDelete() {
-  const prompt = window.confirm("Are you sure you want to delete this tab?");
-  if (!prompt) {
-    return;
+  confirm_status.value = true;
+}
+
+function emitAgree() {
+  delete_status.value = true;
+  if(delete_status.value){
+    const all_tabs = useGetFromLocalStorage();
+    const index = all_tabs?.findIndex((item: any) => item.id === props.id);
+    if (index !== undefined && index !== -1) {
+      all_tabs.splice(index, 1);
+      useChangeLocalStorage(all_tabs);
+    }
+    popup_store.updateFromLocalStorage();
+    delete_status.value = false;
   }
-  const all_tabs = useGetFromLocalStorage();
-  const index = all_tabs?.findIndex((item: any) => item.id === props.id);
-  if (index !== undefined && index !== -1) {
-    all_tabs.splice(index, 1);
-    useChangeLocalStorage(all_tabs);
-  }
+  confirm_status.value = false;
 }
 
 async function openAll() {
@@ -94,6 +107,12 @@ onMounted(() => {
 
 <template>
   <li class="list__item">
+    <Confirm
+        v-if="confirm_status"
+        title="Are you sure?"
+        @emit_agree="emitAgree"
+        @emit_close="confirm_status = false"
+    />
     <input
         :ref="input_ref"
         type="text"
