@@ -98,15 +98,20 @@ onMounted(() => {
 <template>
   <div class="popup">
     <header class="popup__header">
-      <h2 class="popup__title">Create new project</h2>
-      <input :ref="input_ref" class="popup__input" type="text" v-model="title">
-      <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
-      <button @click="clearAll" class="btn btn--error">Clear</button>
-      <div class="btn popup__import">
-        <span>Import</span>
-        <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
+      <div class="popup__header-top">
+        <h2 class="popup__title">Create new project from current tabs</h2>
+        <input :ref="input_ref" class="popup__input" type="text" v-model="title">
+        <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
+        <button @click="clearAll" class="btn btn--error">Clear</button>
       </div>
-      <button @click="exportAll" class="btn btn--success">Export</button>
+      <div class="popup__header-bottom">
+        <h2 class="popup__title">Import or Export to json</h2>
+        <div class="btn popup__import">
+          <span>Import</span>
+          <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
+        </div>
+        <button @click="exportAll" class="btn btn--success">Export</button>
+      </div>
     </header>
     <input v-if="filtered && filtered.length > 0" type="text" placeholder="Search project" class="popup__search"
            v-model="search">
