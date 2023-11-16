@@ -4,7 +4,10 @@ import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import IconDelete from "../icons/IconDelete.vue";
 import {IListItem} from "../../interfaces/list/IList";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
+import Confirm from "../popups/Confirm.vue";
 
+const confirm_status = ref(false);
+const delete_status = ref(false);
 const input_ref = ref();
 const value = ref("");
 const props = defineProps({
@@ -34,19 +37,24 @@ function onBlur() {
 }
 
 function onDelete() {
-  const prompt = window.confirm("Are you sure you want to delete this tab?");
-  if (!prompt) {
-    return;
-  }
-  const all_tabs = useGetFromLocalStorage();
+  confirm_status.value = true;
+}
+
+function emitAgree() {
+  delete_status.value = true;
+  if (delete_status.value) {
+    const all_tabs = useGetFromLocalStorage();
     // @ts-ignore
-  const list_index = all_tabs?.findIndex((item) => item.id === props.list_id);
+    const list_index = all_tabs?.findIndex((item) => item.id === props.list_id);
     // @ts-ignore
-  const index = all_tabs[list_index].items.findIndex((item) => item.id === props.item.id);
-  if (index !== undefined && index !== -1) {
-    all_tabs[list_index].items.splice(index, 1);
-    useChangeLocalStorage(all_tabs);
+    const index = all_tabs[list_index].items.findIndex((item) => item.id === props.item.id);
+    if (index !== undefined && index !== -1) {
+      all_tabs[list_index].items.splice(index, 1);
+      useChangeLocalStorage(all_tabs);
+    }
+    delete_status.value = false;
   }
+  confirm_status.value = false;
 }
 
 onMounted(() => {
@@ -56,6 +64,12 @@ onMounted(() => {
 
 <template>
   <div class="sublist__item">
+    <Confirm
+        v-if="confirm_status"
+        title="Are you sure?"
+        @emit_agree="emitAgree"
+        @emit_close="confirm_status = false"
+    />
     <input
         :ref="input_ref"
         type="text"
