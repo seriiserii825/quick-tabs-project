@@ -6,12 +6,10 @@ import {IListItem} from "../../interfaces/list/IList";
 import SubList from "./SubList.vue";
 import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
-
 import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
 import IconPlus from "../icons/IconPlus.vue";
-
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
 const delete_status = ref(false);
@@ -21,7 +19,6 @@ const sublist_title = ref("");
 const sublist_url = ref("");
 const sublist_url_error = ref("");
 const sublist_add_status = ref(false);
-
 const props = defineProps({
   id: {
     type: Number,
@@ -37,7 +34,6 @@ const props = defineProps({
   }
 });
 const value = ref("");
-
 function onBlur() {
   if (value.value !== "") {
     value.value = value.value.trim();
@@ -50,11 +46,9 @@ function onBlur() {
     }
   }
 }
-
 function onDelete() {
   confirm_status.value = true;
 }
-
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
@@ -69,7 +63,6 @@ function emitAgree() {
   }
   confirm_status.value = false;
 }
-
 async function openAll() {
   const all_tabs = useGetFromLocalStorage();
   const index = all_tabs?.findIndex((item: any) => item.id === props.id);
@@ -105,7 +98,6 @@ async function openAll() {
     }, 1000);
   }
 }
-
 function addSublist() {
   if(sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === ""){
     const new_sublist = {
@@ -125,7 +117,6 @@ function addSublist() {
     popup_store.updateFromLocalStorage();
   }
 }
-
 function onBlurUrl() {
   //check sublist_url for https and http
   if (sublist_url.value.includes("https://") || sublist_url.value.includes("http://")) {
@@ -135,16 +126,13 @@ function onBlurUrl() {
     sublist_url_error.value = "Url must contain https:// or http://";
   }
 }
-
 onMounted(() => {
   value.value = props.title;
 });
 </script>
-
 <template>
   <li class="list__item">
-    <Confirm
-        v-if="confirm_status"
+    <Confirm v-if="confirm_status"
         title="Are you sure?"
         @emit_agree="emitAgree"
         @emit_close="confirm_status = false"

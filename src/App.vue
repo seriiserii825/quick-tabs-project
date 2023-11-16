@@ -7,22 +7,20 @@ import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
 import {usePopupStore} from "./stores/popup-store";
 import {storeToRefs} from "pinia";
-
+import Confirm from "./components/popups/Confirm.vue";
 const popup_store = usePopupStore();
 const {
   search,
   items,
   filtered,
 } = storeToRefs(popup_store);
-
 const input_ref = ref();
 const file_ref = ref();
 const title = ref("");
-
-
+const confirm_status = ref(false);
+const delete_status = ref(false);
 async function onSubmit() {
   const tabs: any = [];
-  //@ts-ignore
   await chrome.windows.getCurrent({populate: true}, function (window) {
     window.tabs.forEach(function (tab: any) {
       tabs.push(tab);
@@ -47,8 +45,6 @@ async function onSubmit() {
     popup_store.updateFromLocalStorage();
   });
 }
-
-
 function importAll() {
   //@ts-ignore
   const file = file_ref.value.files[0];
@@ -66,7 +62,6 @@ function importAll() {
     const result = reader.readAsText(file);
   }
 }
-
 function exportAll() {
   const all_tabs = useGetFromLocalStorage();
   const blob = new Blob([JSON.stringify(all_tabs)], {type: "application/json"});
@@ -85,18 +80,29 @@ function exportAll() {
     saveAs: true
   });
 }
-
-function clearAll() {
-  useClearLocalStorage();
-  popup_store.updateFromLocalStorage();
+function emitAgree() {
+  delete_status.value = true;
+  if (delete_status.value) {
+    confirm_status.value = false;
+    useClearLocalStorage();
+    popup_store.updateFromLocalStorage();
+  }
 }
-
+function clearAll() {
+  confirm_status.value = true;
+}
 onMounted(() => {
   popup_store.updateFromLocalStorage()
 });
 </script>
 <template>
   <div class="popup">
+    <Confirm
+        v-if="confirm_status"
+        title="Are you sure?"
+        @emit_agree="emitAgree"
+        @emit_close="confirm_status = false"
+    />
     <header class="popup__header">
       <div class="popup__header-top">
         <h2 class="popup__title">Create new project from current tabs</h2>
