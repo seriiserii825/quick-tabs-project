@@ -16,6 +16,9 @@
     &.active {
       border: 1px solid var(--accent);
     }
+    &.error {
+      border: 1px solid var(--error);
+    }
   }
   &__toggle {
     display: flex;
@@ -27,8 +30,12 @@
       transform: rotate(90deg);
     }
   }
-  &__play {
+  &__plus {
     margin-left: auto;
+    margin-right: 1.6rem;
+    cursor: pointer;
+  }
+  &__play {
     margin-right: 1.6rem;
     cursor: pointer;
   }
@@ -38,5 +45,19 @@
   }
   &__delete {
     cursor: pointer;
+  }
+  &__body {
+    flex: 0 0 100%;
+  }
+  &__add {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.6rem;
+    padding: 1.6rem 0;
+    input {
+      flex: 1;
+      border-bottom: 1px solid var(--accent);
+    }
   }
 }

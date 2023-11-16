@@ -10,12 +10,17 @@ import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
+import IconPlus from "../icons/IconPlus.vue";
 
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
 const delete_status = ref(false);
 const input_ref = ref();
 const list_status = ref(false);
+const sublist_title = ref("");
+const sublist_url = ref("");
+const sublist_url_error = ref("");
+const sublist_add_status = ref(false);
 
 const props = defineProps({
   id: {
@@ -101,6 +106,36 @@ async function openAll() {
   }
 }
 
+function addSublist() {
+  if(sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === ""){
+    const new_sublist = {
+      id: Date.now(),
+      title: sublist_title.value,
+      url: sublist_url.value,
+    };
+    const all_tabs = useGetFromLocalStorage();
+    const index = all_tabs?.findIndex((item: any) => item.id === props.id);
+    if (index !== undefined && index !== -1) {
+      all_tabs[index].items.push(new_sublist);
+      useChangeLocalStorage(all_tabs);
+    }
+    sublist_url.value = "";
+    sublist_title.value = "";
+    sublist_add_status.value = false;
+    popup_store.updateFromLocalStorage();
+  }
+}
+
+function onBlurUrl() {
+  //check sublist_url for https and http
+  if (sublist_url.value.includes("https://") || sublist_url.value.includes("http://")) {
+    sublist_url_error.value = "";
+  } else {
+    sublist_url.value = "";
+    sublist_url_error.value = "Url must contain https:// or http://";
+  }
+}
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -127,14 +162,36 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
+    <div @click="sublist_add_status = !sublist_add_status" class="list__plus">
+      <IconPlus/>
+    </div>
     <div class="list__play" @click="openAll">
       <IconPlay/>
     </div>
     <div class="list__delete" @click="onDelete">
       <IconDelete/>
     </div>
-    <SubList
-        v-if="list_status"
-        :list_id="id" :items="items"/>
+    <div class="list__body">
+      <div v-if="sublist_add_status" class="list__add">
+        <input
+            type="text"
+            v-model="sublist_title"
+            class="list__input"
+            placeholder="Title"
+        >
+        <input
+            type="text"
+            v-model="sublist_url"
+            class="list__input"
+            :class="{'error': sublist_url_error}"
+            :placeholder="sublist_url_error ? sublist_url_error : 'Url'"
+            @blur="onBlurUrl"
+        >
+        <button @click="addSublist" class="btn">Add</button>
+      </div>
+      <SubList
+          v-if="list_status"
+          :list_id="id" :items="items"/>
+    </div>
   </li>
 </template>
