@@ -25,26 +25,27 @@
     justify-content: center;
     align-items: center;
     flex: 0 0 2rem;
+    background: transparent;
+    border: none;
     cursor: pointer;
     &.active {
       transform: rotate(90deg);
     }
   }
+  &__plus,
+  &__play,
+  &__edit,
+  &__delete {
+    margin-right: 1.6rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
   &__plus {
     margin-left: auto;
-    margin-right: 1.6rem;
-    cursor: pointer;
-  }
-  &__play {
-    margin-right: 1.6rem;
-    cursor: pointer;
-  }
-  &__edit {
-    margin-right: 1.6rem;
-    cursor: pointer;
   }
   &__delete {
-    cursor: pointer;
+    margin-right: 0;
   }
   &__body {
     flex: 0 0 100%;

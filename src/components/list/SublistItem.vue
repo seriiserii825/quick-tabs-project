@@ -81,8 +81,8 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <div class="sublist__delete" @click="onDelete">
+    <button class="sublist__delete" @click="onDelete">
       <IconDelete/>
-    </div>
+    </button>
   </div>
 </template>

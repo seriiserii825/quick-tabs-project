@@ -149,12 +149,12 @@ onMounted(() => {
         @emit_agree="emitAgree"
         @emit_close="confirm_status = false"
     />
-    <div
+    <button
         :class="{'active': list_status}"
         @click="list_status = !list_status"
         class="list__toggle">
       <IconToggle/>
-    </div>
+    </button>
     <input
         :ref="input_ref"
         type="text"
@@ -162,15 +162,15 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <div @click="sublist_add_status = !sublist_add_status" class="list__plus">
+    <button @click="sublist_add_status = !sublist_add_status" class="list__plus">
       <IconPlus/>
-    </div>
-    <div class="list__play" @click="openAll">
+    </button>
+    <button class="list__play" @click="openAll">
       <IconPlay/>
-    </div>
-    <div class="list__delete" @click="onDelete">
+    </button>
+    <button class="list__delete" @click="onDelete">
       <IconDelete/>
-    </div>
+    </button>
     <div class="list__body">
       <div v-if="sublist_add_status" class="list__add">
         <input
