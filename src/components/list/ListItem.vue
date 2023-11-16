@@ -162,11 +162,11 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <button @click="sublist_add_status = !sublist_add_status" class="list__plus">
-      <IconPlus/>
-    </button>
     <button class="list__play" @click="openAll">
       <IconPlay/>
+    </button>
+    <button @click="sublist_add_status = !sublist_add_status" class="list__plus">
+      <IconPlus/>
     </button>
     <button class="list__delete" @click="onDelete">
       <IconDelete/>
