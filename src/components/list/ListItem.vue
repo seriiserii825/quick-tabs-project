@@ -137,6 +137,9 @@ onMounted(() => {
         @emit_agree="emitAgree"
         @emit_close="confirm_status = false"
     />
+    <button class="list__play" @click="openAll">
+      <IconPlay/>
+    </button>
     <button
         :class="{'active': list_status}"
         @click="list_status = !list_status"
@@ -150,9 +153,6 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <button class="list__play" @click="openAll">
-      <IconPlay/>
-    </button>
     <button @click="sublist_add_status = !sublist_add_status" class="list__plus">
       <IconPlus/>
     </button>
