@@ -9,12 +9,13 @@ import useChangeLocalStorage from "../../hooks/useChangeLocalStorage";
 
 import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
+import IconToggle from "../icons/IconToggle.vue";
 
 const popup_store = usePopupStore();
-
 const confirm_status = ref(false);
 const delete_status = ref(false);
 const input_ref = ref();
+const list_status = ref(false);
 
 const props = defineProps({
   id: {
@@ -51,7 +52,7 @@ function onDelete() {
 
 function emitAgree() {
   delete_status.value = true;
-  if(delete_status.value){
+  if (delete_status.value) {
     const all_tabs = useGetFromLocalStorage();
     const index = all_tabs?.findIndex((item: any) => item.id === props.id);
     if (index !== undefined && index !== -1) {
@@ -93,7 +94,7 @@ async function openAll() {
       chrome.tabs.remove(tab.id)
       // @ts-ignore
       all_tabs_urls.forEach((item) => {
-      // @ts-ignore
+        // @ts-ignore
         chrome.tabs.remove(item.id)
       });
     }, 1000);
@@ -113,6 +114,12 @@ onMounted(() => {
         @emit_agree="emitAgree"
         @emit_close="confirm_status = false"
     />
+    <div
+        :class="{'active': list_status}"
+        @click="list_status = !list_status"
+        class="list__toggle">
+      <IconToggle/>
+    </div>
     <input
         :ref="input_ref"
         type="text"
@@ -126,6 +133,8 @@ onMounted(() => {
     <div class="list__delete" @click="onDelete">
       <IconDelete/>
     </div>
-    <SubList :list_id="id" :items="items"/>
+    <SubList
+        v-if="list_status"
+        :list_id="id" :items="items"/>
   </li>
 </template>

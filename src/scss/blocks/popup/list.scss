@@ -14,7 +14,17 @@
     color: var(--accent);
     border: 1px solid transparent;
     &.active {
-        border: 1px solid var(--accent);
+      border: 1px solid var(--accent);
+    }
+  }
+  &__toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 0 0 2rem;
+    cursor: pointer;
+    &.active {
+      transform: rotate(90deg);
     }
   }
   &__play {
