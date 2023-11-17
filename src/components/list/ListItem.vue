@@ -10,6 +10,7 @@ import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
 import IconPlus from "../icons/IconPlus.vue";
+
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
 const delete_status = ref(false);
@@ -34,6 +35,7 @@ const props = defineProps({
   }
 });
 const value = ref("");
+
 function onBlur() {
   if (value.value !== "") {
     value.value = value.value.trim();
@@ -46,9 +48,11 @@ function onBlur() {
     }
   }
 }
+
 function onDelete() {
   confirm_status.value = true;
 }
+
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
@@ -63,6 +67,7 @@ function emitAgree() {
   }
   confirm_status.value = false;
 }
+
 async function openAll() {
   const all_tabs = useGetFromLocalStorage();
   const index = all_tabs?.findIndex((item: any) => item.id === props.id);
@@ -78,28 +83,35 @@ async function openAll() {
       });
       return acc;
     }, []);
-    let queryOptions = {active: true, lastFocusedWindow: true};
-    // @ts-ignore
-    const [tab] = await chrome.tabs.query(queryOptions)
-    const tabs = all_tabs[index].items;
-    // @ts-ignore
-    tabs.forEach((item) => {
-      // @ts-ignore
-      chrome.tabs.create({url: item.url});
-    });
-    setTimeout(() => {
-      // @ts-ignore
+
+    const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+    if (tabs?.[0]?.['vivExtData']) {
+      tabs.forEach((item) => {
+        chrome.tabs.create({url: item.url});
+      });
+      setTimeout(() => {
+        chrome.tabs.remove(tab.id)
+        all_tabs_urls.forEach((item) => {
+          chrome.tabs.remove(item.id)
+        });
+      }, 1000);
+    } else{
+      let queryOptions = {active: true, lastFocusedWindow: true};
+      const [tab] = await chrome.tabs.query(queryOptions);
       chrome.tabs.remove(tab.id)
-      // @ts-ignore
       all_tabs_urls.forEach((item) => {
-        // @ts-ignore
         chrome.tabs.remove(item.id)
       });
-    }, 1000);
+      const tabs = all_tabs[index].items;
+      tabs.forEach((item) => {
+        chrome.tabs.create({url: item.url});
+      });
+    }
   }
 }
+
 function addSublist() {
-  if(sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === ""){
+  if (sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === "") {
     const new_sublist = {
       id: Date.now(),
       title: sublist_title.value,
@@ -117,6 +129,7 @@ function addSublist() {
     popup_store.updateFromLocalStorage();
   }
 }
+
 function onBlurUrl() {
   //check sublist_url for https and http
   if (sublist_url.value.includes("https://") || sublist_url.value.includes("http://")) {
@@ -126,6 +139,7 @@ function onBlurUrl() {
     sublist_url_error.value = "Url must contain https:// or http://";
   }
 }
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -133,9 +147,9 @@ onMounted(() => {
 <template>
   <li class="list__item">
     <Confirm v-if="confirm_status"
-        title="Are you sure?"
-        @emit_agree="emitAgree"
-        @emit_close="confirm_status = false"
+             title="Are you sure?"
+             @emit_agree="emitAgree"
+             @emit_close="confirm_status = false"
     />
     <button class="list__play" @click="openAll">
       <IconPlay/>
