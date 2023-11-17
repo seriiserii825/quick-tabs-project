@@ -85,7 +85,10 @@ async function openAll() {
     }, []);
 
     const tabs = await chrome.tabs.query({active: true, currentWindow: true});
+    let queryOptions = {active: true, lastFocusedWindow: true};
+    const [tab] = await chrome.tabs.query(queryOptions)
     if (tabs?.[0]?.['vivExtData']) {
+      const tabs = all_tabs[index].items;
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
       });
@@ -95,14 +98,13 @@ async function openAll() {
           chrome.tabs.remove(item.id)
         });
       }, 1000);
-    } else{
-      let queryOptions = {active: true, lastFocusedWindow: true};
-      const [tab] = await chrome.tabs.query(queryOptions);
+
+    } else {
+      const tabs = all_tabs[index].items;
       chrome.tabs.remove(tab.id)
       all_tabs_urls.forEach((item) => {
         chrome.tabs.remove(item.id)
       });
-      const tabs = all_tabs[index].items;
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
       });
