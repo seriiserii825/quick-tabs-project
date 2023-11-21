@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Quick Tabs Project",
-  "description": "Manage your tabs in a project",
+  "description": "Manage your tabs in a project sorting by updated at",
   "version": "1.0",
   "author": "Sergiu Burduja",
   "action": {
