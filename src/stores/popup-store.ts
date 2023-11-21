@@ -1,6 +1,7 @@
 import {ref, watch} from "vue";
 import {defineStore} from "pinia";
 import useGetFromLocalStorage from "../hooks/useGetFromLocalStorage";
+import {IList} from "../interfaces/list/IList";
 
 export const usePopupStore = defineStore("popup", () => {
     const items = ref<IList[]>();
@@ -26,6 +27,9 @@ export const usePopupStore = defineStore("popup", () => {
             items.value = all_tabs;
             items.value = items.value?.reverse();
             filtered.value = items.value;
+            filtered.value = filtered.value.sort((a, b) => {
+                return b.updated_at - a.updated_at;
+            });
         } else {
             items.value = [];
             filtered.value = [];

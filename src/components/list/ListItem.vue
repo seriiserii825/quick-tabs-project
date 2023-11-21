@@ -10,7 +10,6 @@ import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
 import IconPlus from "../icons/IconPlus.vue";
-
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
 const delete_status = ref(false);
@@ -35,7 +34,6 @@ const props = defineProps({
   }
 });
 const value = ref("");
-
 function onBlur() {
   if (value.value !== "") {
     value.value = value.value.trim();
@@ -48,11 +46,9 @@ function onBlur() {
     }
   }
 }
-
 function onDelete() {
   confirm_status.value = true;
 }
-
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
@@ -67,8 +63,14 @@ function emitAgree() {
   }
   confirm_status.value = false;
 }
-
-async function openAll() {
+async function openAll(id) {
+  const lc_tabs = useGetFromLocalStorage();
+  const lc_index = lc_tabs?.findIndex((item: any) => item.id === id);
+  if (lc_index !== undefined && lc_index !== -1) {
+    lc_tabs[lc_index].updated_at = Number(Date.now().toString());
+    useChangeLocalStorage(lc_tabs);
+    popup_store.updateFromLocalStorage();
+  }
   const all_tabs = useGetFromLocalStorage();
   const index = all_tabs?.findIndex((item: any) => item.id === props.id);
   if (index !== undefined && index !== -1) {
@@ -83,7 +85,6 @@ async function openAll() {
       });
       return acc;
     }, []);
-
     const tabs = await chrome.tabs.query({active: true, currentWindow: true});
     let queryOptions = {active: true, lastFocusedWindow: true};
     const [tab] = await chrome.tabs.query(queryOptions)
@@ -98,7 +99,6 @@ async function openAll() {
           chrome.tabs.remove(item.id)
         });
       }, 1000);
-
     } else {
       const tabs = all_tabs[index].items;
       chrome.tabs.remove(tab.id)
@@ -111,7 +111,6 @@ async function openAll() {
     }
   }
 }
-
 function addSublist() {
   if (sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === "") {
     const new_sublist = {
@@ -131,7 +130,6 @@ function addSublist() {
     popup_store.updateFromLocalStorage();
   }
 }
-
 function onBlurUrl() {
   //check sublist_url for https and http
   if (sublist_url.value.includes("https://") || sublist_url.value.includes("http://")) {
@@ -141,7 +139,6 @@ function onBlurUrl() {
     sublist_url_error.value = "Url must contain https:// or http://";
   }
 }
-
 onMounted(() => {
   value.value = props.title;
 });
@@ -153,7 +150,7 @@ onMounted(() => {
              @emit_agree="emitAgree"
              @emit_close="confirm_status = false"
     />
-    <button class="list__play" @click="openAll">
+    <button class="list__play" @click="openAll(id)">
       <IconPlay/>
     </button>
     <button

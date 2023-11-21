@@ -38,7 +38,8 @@ async function onSubmit() {
     const new_project = {
       id: Number(Date.now().toString()),
       title: project_title,
-      items: all_tabs_urls
+      items: all_tabs_urls,
+      updated_at: Number(Date.now().toString())
     }
     useAddToLocalStorage(new_project);
     title.value = "";
