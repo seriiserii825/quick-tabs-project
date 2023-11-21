@@ -10,6 +10,8 @@ import {usePopupStore} from "../../stores/popup-store";
 import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
 import IconPlus from "../icons/IconPlus.vue";
+import IconPlayBlue from "../icons/IconPlayBlue.vue";
+
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
 const delete_status = ref(false);
@@ -34,6 +36,7 @@ const props = defineProps({
   }
 });
 const value = ref("");
+
 function onBlur() {
   if (value.value !== "") {
     value.value = value.value.trim();
@@ -46,9 +49,11 @@ function onBlur() {
     }
   }
 }
+
 function onDelete() {
   confirm_status.value = true;
 }
+
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
@@ -63,7 +68,8 @@ function emitAgree() {
   }
   confirm_status.value = false;
 }
-async function openAll(id) {
+
+async function openAll(id, keep = false) {
   const lc_tabs = useGetFromLocalStorage();
   const lc_index = lc_tabs?.findIndex((item: any) => item.id === id);
   if (lc_index !== undefined && lc_index !== -1) {
@@ -93,24 +99,29 @@ async function openAll(id) {
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
       });
-      setTimeout(() => {
+      if (!keep) {
+        setTimeout(() => {
+          chrome.tabs.remove(tab.id)
+          all_tabs_urls.forEach((item) => {
+            chrome.tabs.remove(item.id)
+          });
+        }, 1000);
+      }
+    } else {
+      const tabs = all_tabs[index].items;
+      if (!keep) {
         chrome.tabs.remove(tab.id)
         all_tabs_urls.forEach((item) => {
           chrome.tabs.remove(item.id)
         });
-      }, 1000);
-    } else {
-      const tabs = all_tabs[index].items;
-      chrome.tabs.remove(tab.id)
-      all_tabs_urls.forEach((item) => {
-        chrome.tabs.remove(item.id)
-      });
+      }
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
       });
     }
   }
 }
+
 function addSublist() {
   if (sublist_url.value !== "" && sublist_title.value !== "" && sublist_url_error.value === "") {
     const new_sublist = {
@@ -130,6 +141,7 @@ function addSublist() {
     popup_store.updateFromLocalStorage();
   }
 }
+
 function onBlurUrl() {
   //check sublist_url for https and http
   if (sublist_url.value.includes("https://") || sublist_url.value.includes("http://")) {
@@ -139,6 +151,7 @@ function onBlurUrl() {
     sublist_url_error.value = "Url must contain https:// or http://";
   }
 }
+
 onMounted(() => {
   value.value = props.title;
 });
@@ -150,8 +163,11 @@ onMounted(() => {
              @emit_agree="emitAgree"
              @emit_close="confirm_status = false"
     />
-    <button class="list__play" @click="openAll(id)">
+    <button class="list__play" @click="openAll(id)" title="remove current">
       <IconPlay/>
+    </button>
+    <button class="list__play" @click="openAll(id, true)" title="keep current">
+      <IconPlayBlue/>
     </button>
     <button
         :class="{'active': list_status}"
