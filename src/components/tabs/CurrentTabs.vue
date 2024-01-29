@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import IconEdit from "../icons/IconEdit.vue";
 import {ref} from "vue";
-
+const emits = defineEmits(['emit_save']);
 const title = ref("");
+
+async function onSubmit() {
+  emits('emit_save', title.value);
+}
 </script>
 
 <template>
@@ -11,7 +15,7 @@ const title = ref("");
       <IconEdit/>
       <input type="text" placeholder="Create new tab" v-model="title"/>
     </div>
-    <button class="current-tabs__btn">Save</button>
+    <button @click="onSubmit" :disabled="title === ''" class="current-tabs__btn">Save</button>
   </div>
 </template>
 <style lang="scss">

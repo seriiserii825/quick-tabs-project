@@ -56,6 +56,7 @@ function exportAll() {
       <button class="json__btn" @click="importAll">
         <IconImport/>
         <span>Import</span>
+        <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
       </button>
       <button class="json__btn" @click="exportAll">
         <IconExport/>
@@ -79,6 +80,7 @@ function exportAll() {
     align-items: center;
   }
   &__btn {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -86,6 +88,18 @@ function exportAll() {
     border: none;
     background: transparent;
     cursor: pointer;
+    input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 2;
+    }
   }
 }
 </style>

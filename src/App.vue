@@ -17,13 +17,10 @@ const {
   items,
   filtered,
 } = storeToRefs(popup_store);
-const input_ref = ref();
-const file_ref = ref();
-const title = ref("");
 const confirm_status = ref(false);
 const delete_status = ref(false);
 
-async function onSubmit() {
+async function onSubmit(title: string) {
   const tabs: any = [];
   await chrome.windows.getCurrent({populate: true}, function (window) {
     window.tabs.forEach(function (tab: any) {
@@ -37,7 +34,7 @@ async function onSubmit() {
       });
       return acc;
     }, []);
-    let project_title = title.value.replace(/ /g, '_');
+    let project_title = title.replace(/ /g, '_');
     project_title = project_title.trim();
     const new_project = {
       id: Number(Date.now().toString()),
@@ -46,7 +43,6 @@ async function onSubmit() {
       updated_at: Number(Date.now().toString())
     }
     useAddToLocalStorage(new_project);
-    title.value = "";
     popup_store.updateFromLocalStorage();
   });
 }
@@ -79,7 +75,7 @@ onMounted(() => {
     <MainHeader/>
     <div class="popup__body">
       <Json/>
-      <CurrentTabs/>
+      <CurrentTabs @emit_save="onSubmit"/>
       <div class="popup__search">
         <IconSearch/>
         <input type="text" placeholder="Search saved tabs" v-model="search">

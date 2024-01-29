@@ -4,58 +4,72 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
+    margin-bottom: 0.8rem;
     padding: 1.6rem 0;
-    border-bottom: 1px solid var(--accent);
+    border-radius: 8px;
+    border-bottom: 1px solid #ECECEC;
+    background: rgba(255, 255, 255, 0.80);
+    backdrop-filter: blur(24px);
   }
+
   &__input {
     padding: 0.8rem;
     font-size: 1.8rem;
     font-weight: bold;
     color: var(--accent);
     border: 1px solid transparent;
+
     &.active {
       border: 1px solid var(--accent);
     }
+
     &.error {
       border: 1px solid var(--error);
     }
   }
+
   &__toggle {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex: 0 0 2rem;
     background: transparent;
     border: none;
     cursor: pointer;
+
     &.active {
       transform: rotate(90deg);
     }
   }
+
   &__plus,
   &__play,
   &__edit,
   &__delete {
-    margin-right: 1.6rem;
+    margin-right: 0.8rem;
     background: transparent;
     border: none;
     cursor: pointer;
   }
+
   &__plus {
     margin-left: auto;
   }
+
   &__delete {
     margin-right: 0;
   }
+
   &__body {
     flex: 0 0 100%;
   }
+
   &__add {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1.6rem;
     padding: 1.6rem 0;
+
     input {
       flex: 1;
       border-bottom: 1px solid var(--accent);
