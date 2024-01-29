@@ -53,44 +53,6 @@ async function onSubmit() {
   });
 }
 
-function importAll() {
-  //@ts-ignore
-  const file = file_ref.value.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      //@ts-ignore
-      const fileContents = e.target.result;
-      //@ts-ignore
-      const tabs = JSON.parse(fileContents);
-      useChangeLocalStorage(tabs);
-      popup_store.updateFromLocalStorage();
-    };
-    //@ts-ignore
-    const result = reader.readAsText(file);
-  }
-}
-
-function exportAll() {
-  const all_tabs = useGetFromLocalStorage();
-  const blob = new Blob([JSON.stringify(all_tabs)], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const date = new Date();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const file_name = `${day}-${month}-${year}_${hours}_${minutes}_${seconds}.json`;
-  //@ts-ignore
-  chrome.downloads.download({
-    url: url,
-    filename: file_name,
-    saveAs: true
-  });
-}
-
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
