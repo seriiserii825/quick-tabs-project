@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
 import ListItem from "./components/list/ListItem.vue";
-import useGetFromLocalStorage from "./hooks/useGetFromLocalStorage";
 import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
-import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
 import {usePopupStore} from "./stores/popup-store";
 import {storeToRefs} from "pinia";
