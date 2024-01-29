@@ -15,6 +15,7 @@ html {
 body {
   position: relative;
   margin: 0;
+  font-family: var(--font-1);
   font-size: 1.8rem;
   background: white;
 }
@@ -55,4 +56,9 @@ p {
   margin: 0 auto;
   padding: 0 15px;
   max-width: 1400px;
+}
+* {
+  &:focus {
+    outline: 1px solid #ccc;
+  }
 }

@@ -6,8 +6,11 @@ import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
 import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
 import {usePopupStore} from "./stores/popup-store";
-import {storeToRefs} from "pinia";
-import Confirm from "./components/popups/Confirm.vue";
+import {storeToRefs} from "pinia"; import Confirm from "./components/popups/Confirm.vue"; import MainHeader from "./components/header/MainHeader.vue";
+import Json from "./components/ui/Json.vue";
+import IconSearch from "./components/icons/IconSearch.vue";
+import CurrentTabs from "./components/tabs/CurrentTabs.vue";
+
 const popup_store = usePopupStore();
 const {
   search,
@@ -19,6 +22,7 @@ const file_ref = ref();
 const title = ref("");
 const confirm_status = ref(false);
 const delete_status = ref(false);
+
 async function onSubmit() {
   const tabs: any = [];
   await chrome.windows.getCurrent({populate: true}, function (window) {
@@ -46,6 +50,7 @@ async function onSubmit() {
     popup_store.updateFromLocalStorage();
   });
 }
+
 function importAll() {
   //@ts-ignore
   const file = file_ref.value.files[0];
@@ -63,6 +68,7 @@ function importAll() {
     const result = reader.readAsText(file);
   }
 }
+
 function exportAll() {
   const all_tabs = useGetFromLocalStorage();
   const blob = new Blob([JSON.stringify(all_tabs)], {type: "application/json"});
@@ -82,6 +88,7 @@ function exportAll() {
     saveAs: true
   });
 }
+
 function emitAgree() {
   delete_status.value = true;
   if (delete_status.value) {
@@ -90,9 +97,11 @@ function emitAgree() {
     popup_store.updateFromLocalStorage();
   }
 }
+
 function clearAll() {
   confirm_status.value = true;
 }
+
 onMounted(() => {
   popup_store.updateFromLocalStorage()
 });
@@ -105,36 +114,31 @@ onMounted(() => {
         @emit_agree="emitAgree"
         @emit_close="confirm_status = false"
     />
-    <header class="popup__header">
-      <div class="popup__header-top">
-        <h2 class="popup__title">Create new project from current tabs</h2>
-        <input :ref="input_ref" class="popup__input" type="text" v-model="title">
-        <button @click="onSubmit" :disabled="title === ''" class="btn">Create</button>
-        <button @click="clearAll" class="btn btn--error">Clear</button>
+    <MainHeader/>
+    <div class="popup__body">
+      <Json/>
+      <CurrentTabs/>
+      <div class="popup__search">
+        <IconSearch/>
+        <input type="text" placeholder="Search saved tabs" class="popup__search"
+               v-model="search">
       </div>
-      <div class="popup__header-bottom">
-        <h2 class="popup__title">Import or Export to json</h2>
-        <div class="btn popup__import">
-          <span>Import</span>
-          <input @change="importAll" ref="file_ref" type="file" id="fileInput"/>
-        </div>
-        <button @click="exportAll" class="btn btn--success">Export</button>
-      </div>
-    </header>
-    <input v-if="filtered && filtered.length > 0" type="text" placeholder="Search project" class="popup__search"
-           v-model="search">
-    <ul v-if="items && items.length > 0" class="list">
-      <ListItem
-          v-for="item in filtered"
-          :key="item.id"
-          :id="item.id"
-          :title="item.title"
-          :items="item.items"/>
-    </ul>
+      <ul v-if="items && items.length > 0" class="list">
+        <ListItem
+            v-for="item in filtered"
+            :key="item.id"
+            :id="item.id"
+            :title="item.title"
+            :items="item.items"/>
+      </ul>
+    </div>
   </div>
 </template>
 <style>
 #app {
-  width: 780px;
+  width: 580px;
+  border-radius: 16px;
+  border: 1px solid #ECECEC;
+  box-shadow: 0 3.2rem 6.4rem 0 rgba(0, 0, 0, 0.05);
 }
 </style>

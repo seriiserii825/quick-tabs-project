@@ -1,7 +1,14 @@
 .popup {
-  padding: 3.2rem;
   width: 100%;
+  border-radius: 16px;
+  border: 1px solid #ECECEC;
+  box-shadow: 0 3.2rem 6.4rem 0 rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  &__body {
+    padding: 0.8rem 1.2rem;
+    background: rgba(245, 245, 245, 0.80);
+    backdrop-filter: blur(2.4rem);
+  }
   &__header {
     margin-bottom: 3.2rem;
     &-top {
