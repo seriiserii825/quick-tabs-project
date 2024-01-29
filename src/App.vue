@@ -6,7 +6,9 @@ import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
 import useChangeLocalStorage from "./hooks/useChangeLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
 import {usePopupStore} from "./stores/popup-store";
-import {storeToRefs} from "pinia"; import Confirm from "./components/popups/Confirm.vue"; import MainHeader from "./components/header/MainHeader.vue";
+import {storeToRefs} from "pinia";
+import Confirm from "./components/popups/Confirm.vue";
+import MainHeader from "./components/header/MainHeader.vue";
 import Json from "./components/ui/Json.vue";
 import IconSearch from "./components/icons/IconSearch.vue";
 import CurrentTabs from "./components/tabs/CurrentTabs.vue";
@@ -120,8 +122,7 @@ onMounted(() => {
       <CurrentTabs/>
       <div class="popup__search">
         <IconSearch/>
-        <input type="text" placeholder="Search saved tabs" class="popup__search"
-               v-model="search">
+        <input type="text" placeholder="Search saved tabs" v-model="search">
       </div>
       <ul v-if="items && items.length > 0" class="list">
         <ListItem
