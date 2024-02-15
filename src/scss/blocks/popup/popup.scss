@@ -38,11 +38,17 @@
     color: var(--accent);
   }
   &__search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1rem;
     input {
       margin-left: 1rem;
-      background: transparent;
-      border: none;
+      flex: 1;
+      height: 4rem;
+      text-indent: 1rem;
+      background: #eee;
+      border: 1px solid #ccc;
     }
   }
   &__import {

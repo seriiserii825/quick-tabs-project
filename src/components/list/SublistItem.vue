@@ -83,7 +83,7 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
-    <a target="_blank" :href="url">Open</a>
+    <a class="list__open" target="_blank" :href="url">Open</a>
     <button class="sublist__delete" @click="onDelete">
       <IconDelete/>
     </button>
