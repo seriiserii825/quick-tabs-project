@@ -6,8 +6,14 @@ import useChangeLocalStorage from "../../hooks/useChangeLocalStorage.ts";
 import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage.ts";
 import {ref} from "vue";
 
+const emits = defineEmits(['emit_create_project']);
+
 const file_ref = ref();
 const popup_store = usePopupStore();
+
+function newProject() {
+  emits('emit_create_project');
+}
 
 function importAll() {
   //@ts-ignore
@@ -53,6 +59,7 @@ function exportAll() {
   <div class="json">
     <h3 class="json__title">Json</h3>
     <div class="json__actions">
+      <button @click="newProject" class="json__btn"><strong>+</strong> Create new project</button>
       <button class="json__btn" @click="importAll">
         <IconImport/>
         <span>Import</span>
@@ -88,6 +95,11 @@ function exportAll() {
     border: none;
     background: transparent;
     cursor: pointer;
+    strong {
+      margin-right: 0.8rem;
+      font-size: 1.8rem;
+      color: var(--accent);
+    }
     input {
       position: absolute;
       top: 0;

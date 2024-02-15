@@ -19,6 +19,7 @@ const {
 } = storeToRefs(popup_store);
 const confirm_status = ref(false);
 const delete_status = ref(false);
+const is_create_project_visible = ref(false);
 
 async function onSubmit(title: string) {
   const tabs: any = [];
@@ -56,6 +57,10 @@ function emitAgree() {
   }
 }
 
+function createNewProject(){
+  is_create_project_visible.value = !is_create_project_visible.value;
+}
+
 function clearAll() {
   confirm_status.value = true;
 }
@@ -74,8 +79,8 @@ onMounted(() => {
     />
     <MainHeader/>
     <div class="popup__body">
-      <Json/>
-      <CurrentTabs @emit_save="onSubmit"/>
+      <Json @emit_create_project="createNewProject"/>
+      <CurrentTabs v-if="is_create_project_visible" @emit_save="onSubmit"/>
       <div class="popup__search">
         <IconSearch/>
         <input type="text" placeholder="Search saved tabs" v-model="search">
