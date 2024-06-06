@@ -5,3 +5,9 @@
 @import "blocks/popup/sublist";
 @import "blocks/btn/btn";
 @import "blocks/popup/confirm";
+
+* {
+  &:focus {
+    outline: 1px solid magenta;
+  }
+}
