@@ -110,10 +110,10 @@ async function openAll(id, keep = false) {
     } else {
       const tabs = all_tabs[index].items;
       if (!keep) {
-        chrome.tabs.remove(tab.id)
         all_tabs_urls.forEach((item) => {
           chrome.tabs.remove(item.id)
         });
+        chrome.tabs.remove(tab.id)
       }
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
