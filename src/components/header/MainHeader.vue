@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import IconLogo from "../icons/IconLogo.vue";
 import IconDots from "../icons/IconDots.vue";
+
+const emits = defineEmits(["emit_dots"]);
+function emitDots() {
+  emits("emit_dots");
+}
 </script>
 
 <template>
   <header class="main-header">
     <div class="main-header__top">
       <div class="main-header__logo">
-        <IconLogo/>
+        <IconLogo />
       </div>
-      <div class="main-header__dots">
-        <IconDots/>
+      <div class="main-header__dots" @click="emitDots">
+        <IconDots />
       </div>
     </div>
   </header>
@@ -19,8 +24,8 @@ import IconDots from "../icons/IconDots.vue";
 .main-header {
   margin-bottom: 1.2rem;
   padding: 1rem 1.6rem;
-  border-bottom: 1px solid #ECECEC;
-  background: rgba(255, 255, 255, 0.90);
+  border-bottom: 1px solid #ececec;
+  background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(24px);
   &__top {
     display: flex;
@@ -32,3 +37,4 @@ import IconDots from "../icons/IconDots.vue";
   }
 }
 </style>
+
