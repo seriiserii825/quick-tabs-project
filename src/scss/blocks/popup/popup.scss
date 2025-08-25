@@ -1,7 +1,14 @@
 .popup {
-  padding: 3.2rem;
   width: 100%;
+  border-radius: 16px;
+  border: 1px solid #ECECEC;
+  box-shadow: 0 3.2rem 6.4rem 0 rgba(0, 0, 0, 0.05);
   overflow: hidden;
+  &__body {
+    padding: 0.8rem 1.2rem;
+    background: rgba(245, 245, 245, 0.80);
+    backdrop-filter: blur(2.4rem);
+  }
   &__header {
     margin-bottom: 3.2rem;
     &-top {
@@ -30,23 +37,19 @@
     font-weight: bold;
     color: var(--accent);
   }
-  &__input {
-    flex: 1;
-    height: 4.8rem;
-    text-indent: 2rem;
-    border: none;
-    border-bottom: 1px solid var(--accent);
-    outline: none;
-  }
   &__search {
-    width: 100%;
-    height: 4.8rem;
-    font-size: 2rem;
-    font-weight: bold;
-    font-style: italic;
-    border: none;
-    border-bottom: 1px solid var(--accent);
-    outline: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    input {
+      margin-left: 1rem;
+      flex: 1;
+      height: 4rem;
+      text-indent: 1rem;
+      background: #eee;
+      border: 1px solid #ccc;
+    }
   }
   &__import {
     position: relative;

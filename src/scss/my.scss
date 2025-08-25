@@ -1,7 +1,13 @@
-@import "variables";
-@import "base";
-@import "blocks/popup/popup";
-@import "blocks/popup/list";
-@import "blocks/popup/sublist";
-@import "blocks/btn/btn";
-@import "blocks/popup/confirm";
+@use "variables";
+@use "base";
+@use "blocks/popup/popup";
+@use "blocks/popup/list";
+@use "blocks/popup/sublist";
+@use "blocks/btn/btn";
+@use "blocks/popup/confirm";
+
+* {
+  &:focus {
+    outline: 1px solid magenta;
+  }
+}

@@ -13,6 +13,7 @@ const confirm_status = ref(false);
 const delete_status = ref(false);
 const input_ref = ref();
 const value = ref("");
+const url = ref("");
 const props = defineProps({
   item: {
     type: Object as PropType<IListItem>,
@@ -63,6 +64,7 @@ function emitAgree() {
 
 onMounted(() => {
   value.value = props.item.title;
+  url.value = props.item.url;
 });
 </script>
 
@@ -81,6 +83,7 @@ onMounted(() => {
         class="list__input"
         @blur="onBlur"
     >
+    <a class="list__open" target="_blank" :href="url">Open</a>
     <button class="sublist__delete" @click="onDelete">
       <IconDelete/>
     </button>
