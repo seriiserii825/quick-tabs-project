@@ -69,7 +69,7 @@ function emitAgree() {
   confirm_status.value = false;
 }
 
-async function openAll(id, keep = false) {
+async function openAll(id: number, keep = false) {
   const lc_tabs = useGetFromLocalStorage();
   const lc_index = lc_tabs?.findIndex((item: any) => item.id === id);
   if (lc_index !== undefined && lc_index !== -1) {
