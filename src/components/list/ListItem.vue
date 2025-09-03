@@ -69,7 +69,7 @@ function emitAgree() {
   confirm_status.value = false;
 }
 
-async function openAll(id: number, keep = false) {
+async function openAll(id, keep = false) {
   const lc_tabs = useGetFromLocalStorage();
   const lc_index = lc_tabs?.findIndex((item: any) => item.id === id);
   if (lc_index !== undefined && lc_index !== -1) {
@@ -110,10 +110,10 @@ async function openAll(id: number, keep = false) {
     } else {
       const tabs = all_tabs[index].items;
       if (!keep) {
+        chrome.tabs.remove(tab.id)
         all_tabs_urls.forEach((item) => {
           chrome.tabs.remove(item.id)
         });
-        chrome.tabs.remove(tab.id)
       }
       tabs.forEach((item) => {
         chrome.tabs.create({url: item.url});
