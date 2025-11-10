@@ -2,6 +2,7 @@
   "manifest_version": 3,
   "name": "Quick Tabs Project",
   "version": "1.1",
+  "key": "/home/serii/Documents/chrome-extensions/quick-tabs-project/dist.pem",
   "description": "Manage your tabs in a project sorting by updated at",
   "author": "Sergiu Burduja",
 
