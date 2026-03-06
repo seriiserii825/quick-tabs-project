@@ -22,7 +22,7 @@ async function onSubmit(title: string) {
   const tabs: any = [];
   await chrome.windows.getCurrent({ populate: true }, function (window) {
     window.tabs.forEach(function (tab: any) {
-      tabs.push(tab);
+      if (!tab.url?.startsWith("chrome-extension://")) tabs.push(tab);
     });
     const all_tabs_urls = tabs.reduce((acc: any, tab: any) => {
       acc.push({
