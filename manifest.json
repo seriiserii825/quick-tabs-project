@@ -2,7 +2,6 @@
   "manifest_version": 3,
   "name": "Quick Tabs Project",
   "version": "1.1",
-  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAn51//8VyH6uVuo21Kva9oZCmfWfR6hkgGQHfwrUmkEftegWOXr+aA3gkjvnKHclMg9xT29+sgU8WgNtfgQ3jN46lmpq4FwEGwfrzInze4rVTT/KuIpj3kk25WQIR1/FwWYQNz/ZQdVudZnXq8YO+HN/DQpzMNd/uY1Ilk/f8n7XS93HoaZ85Enal/zXjKMbfXVzpymmM02Zrpd637htE0j8gA3+ai1T5LXG2BoVb4OLU1oDLslt0rMw49W7VTEEDsdz+eNTyAxj2icmlKS5loyaF1GBD3nuvt0p/EhpKohi6CG0M/3A694oTkxeZJFti4UYAY9rWfBYj0BPafk+0qQIDAQAB",
   "description": "Manage your tabs in a project sorting by updated at",
   "author": "Sergiu Burduja",
 
