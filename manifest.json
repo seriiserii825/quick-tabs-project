@@ -14,11 +14,7 @@
     "128": "icons/icon-128.png"
   },
 
-  "permissions": [
-    "tabs",
-    "activeTab",
-    "downloads"
-  ],
+  "permissions": ["tabs", "activeTab", "downloads"],
 
   "background": { "service_worker": "background.js" },
 
@@ -26,5 +22,5 @@
     "_execute_action": { "suggested_key": { "default": "Alt+O" } }
   },
 
-  "options_page": "index.html" 
+  "options_page": "index.html"
 }
