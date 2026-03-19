@@ -14,9 +14,9 @@ function emitDots() {
       <div class="main-header__logo">
         <IconLogo />
       </div>
-      <div class="main-header__dots" @click="emitDots">
+      <button class="main-header__dots" @click="emitDots">
         <IconDots />
-      </div>
+      </button>
     </div>
   </header>
 </template>
@@ -33,8 +33,9 @@ function emitDots() {
     align-items: center;
   }
   &__dots {
+    border: none;
+    background: transparent;
     cursor: pointer;
   }
 }
 </style>
-
