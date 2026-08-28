@@ -11,6 +11,8 @@ import Confirm from "../popups/Confirm.vue";
 import IconToggle from "../icons/IconToggle.vue";
 import IconPlus from "../icons/IconPlus.vue";
 import IconPlayBlue from "../icons/IconPlayBlue.vue";
+import IconUpdate from "../icons/IconUpdate.vue";
+import useExportLocalStorage from "../../hooks/useExportLocalStorage";
 
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
@@ -129,6 +131,27 @@ async function openAll(id, keep = false) {
   }
 }
 
+async function updateFromCurrentTabs() {
+  // @ts-ignore
+  const tabs = await chrome.tabs.query({ currentWindow: true });
+  const new_items = tabs
+    .filter((tab: any) => !tab.url?.startsWith("chrome-extension://"))
+    .map((tab: any) => ({
+      id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
+      title: tab.title,
+      url: tab.url,
+    }));
+  const all_tabs = useGetFromLocalStorage();
+  const index = all_tabs?.findIndex((item: any) => item.id === props.id);
+  if (index !== undefined && index !== -1) {
+    all_tabs[index].items = new_items;
+    all_tabs[index].updated_at = Number(Date.now().toString());
+    useChangeLocalStorage(all_tabs);
+    popup_store.updateFromLocalStorage();
+  }
+  useExportLocalStorage();
+}
+
 function addSublist() {
   if (
     sublist_url.value !== "" &&
@@ -203,6 +226,13 @@ onMounted(() => {
       class="list__plus"
     >
       <IconPlus />
+    </button>
+    <button
+      @click="updateFromCurrentTabs"
+      class="list__update"
+      title="Replace saved tabs with currently open tabs"
+    >
+      <IconUpdate />
     </button>
     <button class="list__delete" @click="onDelete">
       <IconDelete />

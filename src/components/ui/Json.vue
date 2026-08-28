@@ -3,7 +3,7 @@ import IconImport from "../icons/IconImport.vue";
 import IconExport from "../icons/IconExport.vue";
 import {usePopupStore} from "../../stores/popup-store.ts";
 import useChangeLocalStorage from "../../hooks/useChangeLocalStorage.ts";
-import useGetFromLocalStorage from "../../hooks/useGetFromLocalStorage.ts";
+import useExportLocalStorage from "../../hooks/useExportLocalStorage.ts";
 import {ref} from "vue";
 
 const emits = defineEmits(['emit_create_project']);
@@ -34,23 +34,7 @@ function importAll() {
 }
 
 function exportAll() {
-  const all_tabs = useGetFromLocalStorage();
-  const blob = new Blob([JSON.stringify(all_tabs)], {type: "application/json"});
-  const url = URL.createObjectURL(blob);
-  const date = new Date();
-  const hours = date.getHours();
-  const minutes = date.getMinutes();
-  const seconds = date.getSeconds();
-  const day = date.getDate();
-  const month = date.getMonth() + 1;
-  const year = date.getFullYear();
-  const file_name = `${day}-${month}-${year}_${hours}_${minutes}_${seconds}.json`;
-  //@ts-ignore
-  chrome.downloads.download({
-    url: url,
-    filename: file_name,
-    saveAs: true
-  });
+  useExportLocalStorage();
 }
 
 </script>
