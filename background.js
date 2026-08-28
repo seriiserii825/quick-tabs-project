@@ -1,3 +1,5 @@
+console.log("[quick-tabs] service worker started", Date.now());
+
 // script start after extension install
 chrome.runtime.onInstalled.addListener(async () => {
     console.log("extension installed");

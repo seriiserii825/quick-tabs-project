@@ -51,6 +51,20 @@
   &__delete {
     margin-right: 0;
   }
+  &__update {
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+    svg {
+      transition: transform 0.25s ease, color 0.15s ease;
+    }
+    &:hover {
+      color: var(--accent-hover);
+      svg {
+        transform: rotate(180deg);
+      }
+    }
+  }
   &__body {
     flex: 0 0 100%;
   }
