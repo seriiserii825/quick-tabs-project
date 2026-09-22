@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import ListItem from "./components/list/ListItem.vue";
 import useAddToLocalStorage from "./hooks/useAddToLocalStorage";
 import useClearLocalStorage from "./hooks/useClearLocalStorage";
@@ -17,6 +17,9 @@ const confirm_status = ref(false);
 const delete_status = ref(false);
 const is_create_project_visible = ref(false);
 const is_json_visible = ref(false);
+
+const currentCount = computed(() => filtered.value?.length ?? 0);
+const totalCount = computed(() => items.value?.length ?? 0);
 
 async function onSubmit(title: string) {
   const tabs: any = [];
@@ -87,6 +90,7 @@ onMounted(() => {
       <div class="popup__search">
         <IconSearch />
         <input type="text" placeholder="Search saved tabs" v-model="search" />
+        <span class="popup__count">{{ currentCount }}/{{ totalCount }}</span>
       </div>
       <ul v-if="items && items.length > 0" class="list">
         <ListItem
