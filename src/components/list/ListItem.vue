@@ -16,6 +16,7 @@ import useExportLocalStorage from "../../hooks/useExportLocalStorage";
 
 const popup_store = usePopupStore();
 const confirm_status = ref(false);
+const update_confirm_status = ref(false);
 const delete_status = ref(false);
 const input_ref = ref();
 const list_status = ref(false);
@@ -131,6 +132,11 @@ async function openAll(id, keep = false) {
   }
 }
 
+function emitAgreeUpdate() {
+  update_confirm_status.value = false;
+  updateFromCurrentTabs();
+}
+
 async function updateFromCurrentTabs() {
   // @ts-ignore
   const tabs = await chrome.tabs.query({ currentWindow: true });
@@ -201,6 +207,12 @@ onMounted(() => {
       @emit_agree="emitAgree"
       @emit_close="confirm_status = false"
     />
+    <Confirm
+      v-if="update_confirm_status"
+      :title="`Replace tabs in ${value}?`"
+      @emit_agree="emitAgreeUpdate"
+      @emit_close="update_confirm_status = false"
+    />
     <button class="list__play" @click="openAll(id)" title="remove current">
       <IconPlay />
     </button>
@@ -228,7 +240,7 @@ onMounted(() => {
       <IconPlus />
     </button>
     <button
-      @click="updateFromCurrentTabs"
+      @click="update_confirm_status = true"
       class="list__update"
       title="Replace saved tabs with currently open tabs"
     >
