@@ -19,11 +19,14 @@ function onClose() {
 </script>
 
 <template>
-  <div class="confirm">
-    <h2 class="confirm__title">{{ title }}</h2>
-    <div class="confirm__buttons">
-      <button @click="onAgree" class="btn btn--error">Yes</button>
-      <button @click="onClose" class="btn btn--success">No</button>
+  <!-- teleport: .list__item has backdrop-filter, which would make position: fixed relative to the row -->
+  <Teleport to="body">
+    <div class="confirm">
+      <h2 class="confirm__title">{{ title }}</h2>
+      <div class="confirm__buttons">
+        <button @click="onAgree" class="btn btn--error">Yes</button>
+        <button @click="onClose" class="btn btn--success">No</button>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
