@@ -140,15 +140,27 @@ function emitAgreeUpdate() {
 async function updateFromCurrentTabs() {
   // @ts-ignore
   const tabs = await chrome.tabs.query({ currentWindow: true });
-  const new_items = tabs
-    .filter((tab: any) => !tab.url?.startsWith("chrome-extension://"))
-    .map((tab: any) => ({
-      id: Number(Date.now().toString()) + Math.floor(Math.random() * 1000) + 1,
-      title: tab.title,
-      url: tab.url,
-    }));
   const all_tabs = useGetFromLocalStorage();
   const index = all_tabs?.findIndex((item: any) => item.id === props.id);
+  // Keep ids of tabs that were already in the project (matched by url),
+  // so the exported JSON diff only shows real changes.
+  const old_items = index !== undefined && index !== -1 ? [...all_tabs[index].items] : [];
+  const used_ids = new Set(old_items.map((item: any) => item.id));
+  const new_items = tabs
+    .filter((tab: any) => !tab.url?.startsWith("chrome-extension://"))
+    .map((tab: any) => {
+      const old_index = old_items.findIndex((item: any) => item.url === tab.url);
+      let id: number;
+      if (old_index !== -1) {
+        id = old_items[old_index].id;
+        old_items.splice(old_index, 1);
+      } else {
+        id = Date.now();
+        while (used_ids.has(id)) id++;
+        used_ids.add(id);
+      }
+      return { id, title: tab.title, url: tab.url };
+    });
   if (index !== undefined && index !== -1) {
     all_tabs[index].items = new_items;
     all_tabs[index].updated_at = Number(Date.now().toString());
